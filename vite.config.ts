@@ -8,6 +8,14 @@ const srcDir = resolve(__dirname, "src");
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    build: {
+        sourcemap: true,
+        rollupOptions: {
+          input: {
+                dashboard: resolve(__dirname, 'src/dashboard/dashboard.html'),
+          },
+        },
+    },
     plugins: [svelte(), crx({ manifest })],
     resolve: {
         alias: {

@@ -1,11 +1,11 @@
-import Options from "src/components/Options.svelte";
+import Dashboard from "./Dashboard.svelte";
 import { storage } from "src/storage";
 
 const target = document.getElementById("app");
 
 function render() {
     storage.get().then(({ count }) => {
-        new Options({ target, props: { count } });
+        new Dashboard({ target, props: { count } });
     });
 }
 

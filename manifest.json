@@ -31,5 +31,5 @@
         "declarativeNetRequest",
         "declarativeNetRequestFeedback"
     ],
-    "host_permissions": ["https://*/"]
+    "host_permissions": ["https://www.e-solat.gov.my/"]
 }
