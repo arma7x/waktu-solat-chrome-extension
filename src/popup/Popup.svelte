@@ -1,10 +1,12 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
-    import { api } from "../api";
-    import { storage } from "../storage";
+    import { makeRequest } from "../api";
+    import { storage, configStorage } from "../storage";
 
     export let count: number;
     let successMessage: string = null;
+
+    let prayerTime;
 
     function openDashboard() {
         const optionsUrl = chrome.runtime.getURL('src/dashboard/dashboard.html');
@@ -34,6 +36,24 @@
             }, 1500);
         });
     }
+
+    onMount(async () => {
+        try {
+            const district = await configStorage.getZone();
+            if (district != null) {
+                const d = new Date();
+                let today = `${d.getFullYear()}-${(d.getMonth() + 1) > 10 ? (d.getMonth() + 1) : '0'+(d.getMonth() + 1)}-${d.getDate()}`;
+                const req = makeRequest("POST", "duration", district.code, { "datestart": today, "dateend": today });
+                prayerTime = (await (await fetch(req)).json()).prayerTime;
+                console.log(prayerTime);
+            } else {
+
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
 </script>
 
 <div class="container">
@@ -45,6 +65,9 @@
         <button on:click={openDashboard}>Dashboard</button>
         {#if successMessage}<span class="success">{successMessage}</span>{/if}
     </div>
+    {#if prayerTime }
+        {JSON.stringify(prayerTime)};
+    {/if}
 </div>
 
 <style>
