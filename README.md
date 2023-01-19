@@ -1,14 +1,6 @@
-# Svelte Typescript Chrome Extension Boilerplate
+# Waktu Solat - Chrome Extension
 
-> Boilerplate for Chrome Extension Svelte Typescript project
-
-## Features
-
--   [Svelte](https://svelte.dev/)
--   [TypeScript](https://www.typescriptlang.org/)
--   [Vite](https://vitejs.dev/)
--   [CRXJS Vite Plugin](https://github.com/crxjs/chrome-extension-tools/blob/main/packages/vite-plugin/README.md)
--   [Chrome Extensions Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/)
+> Waktu Solat hanya bagi Semenanjung Malaysia, Sabah dan Sarawak
 
 ## Development
 
