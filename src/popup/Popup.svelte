@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { makeRequest } from "../api";
     import { storage, configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA } from "../types";
 
     export let count: number;
     let successMessage: string = null;

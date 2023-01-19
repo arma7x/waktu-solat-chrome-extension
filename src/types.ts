@@ -29,3 +29,7 @@ export const PERIOD_OPTIONS = {
     [PERIOD.YEAR]: "Tahunan",
     [PERIOD.DURATION]: "Tarikh(Mula - Tamat)",
 }
+
+export const WAKTU_SOLAT_SORT = ["date", "hijri", "day", "imsak", "fajr", "syuruk", "dhuhr", "asr". "maghrib", "isha"];
+
+export const WAKTU_SOLAT_BAHASA = ["Tarikh", "Hijri", "Hari", "Imsak", "Subuh", "Syuruk", "Zohor", "Asar". "Maghrib", "Isyak"];
