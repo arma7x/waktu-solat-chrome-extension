@@ -1,8 +1,15 @@
 <script lang="ts">
-    import { storage } from "../storage";
+    import { onMount, onDestroy } from 'svelte';
+    import { getStateZoneCode, makeRequest } from "../api";
+    import { storage, cacheStorage, configStorage } from "../storage";
 
     export let count: number;
     let successMessage: string = null;
+
+    let stateZoneCode: { [key: string] } = {};
+    let districts: any;
+    let currentState: string;
+    let currentDistrict: { [key: string]: { name: string, code: string }; };
 
     function increment() {
         count += 1;
@@ -21,6 +28,39 @@
             }, 1500);
         });
     }
+
+    async function onStateChange(evt) {
+        currentDistrict = null;
+        await configStorage.resetZone();
+        districts = stateZoneCode[evt.target.value];
+        configStorage.setState(evt.target.value);
+    }
+
+    function onDistrictChange(evt) {
+        currentDistrict = null;
+        try {
+            currentDistrict = JSON.parse(evt.target.value);
+            configStorage.setZone(currentDistrict);
+        } catch (err) {
+            currentDistrict = null;
+            console.error(err);
+        }
+    }
+
+    onMount(async () => {
+        try {
+            currentState = await configStorage.getState();
+            currentDistrict = await configStorage.getZone();
+            stateZoneCode = await getStateZoneCode();
+            if (stateZoneCode[currentState]) {
+                districts = stateZoneCode[currentState];
+            }
+            await cacheStorage.cacheZoneCode(stateZoneCode);
+        } catch (err) {
+            console.error(err);
+        };
+    });
+
 </script>
 
 <div class="container">
@@ -30,6 +70,24 @@
         <button on:click={increment}>+</button>
         <button on:click={save}>Save</button>
         {#if successMessage}<span class="success">{successMessage}</span>{/if}
+    </div>
+    <div>
+        <select id="state" name="state" on:change={onStateChange} bind:value={currentState}>
+            <option value="">Please select state</option>
+            {#each Object.keys(stateZoneCode) as state}
+            <option value="{state}">{state}</option>
+            {/each}
+        </select>
+    </div>
+    <div>
+    {#if districts != null}
+        <select id="district" name="district" on:change={onDistrictChange}>
+            <option value="">Please select district/location</option>
+            {#each districts as district}
+            <option value="{JSON.stringify(district)}" selected={currentDistrict && currentDistrict.name == district.name}>{district.name}</option>
+            {/each}
+        </select>
+    {/if}
     </div>
 </div>
 

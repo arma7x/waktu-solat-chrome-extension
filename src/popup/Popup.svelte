@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount, onDestroy } from 'svelte';
+    import { api } from "../api";
     import { storage } from "../storage";
 
     export let count: number;
