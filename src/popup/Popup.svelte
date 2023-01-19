@@ -1,13 +1,11 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     import { makeRequest } from "../api";
-    import { storage, configStorage } from "../storage";
+    import { configStorage } from "../storage";
     import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA } from "../types";
 
-    export let count: number;
-    let successMessage: string = null;
-
     let prayerTime: WAKTU_SOLAT;
+    let district: DISTRICT;
 
     function openDashboard() {
         const optionsUrl = chrome.runtime.getURL('src/dashboard/dashboard.html');
@@ -20,27 +18,9 @@
         });
     }
 
-    function increment() {
-        count += 1;
-    }
-
-    function decrement() {
-        count -= 1;
-    }
-
-    function save() {
-        storage.set({ count }).then(() => {
-            successMessage = "Options saved!";
-
-            setTimeout(() => {
-                successMessage = null;
-            }, 1500);
-        });
-    }
-
     onMount(async () => {
         try {
-            const district: DISTRICT = await configStorage.getZone();
+            district = await configStorage.getZone();
             if (district != null) {
                 const d = new Date();
                 let today = `${d.getFullYear()}-${(d.getMonth() + 1) > 10 ? (d.getMonth() + 1) : '0'+(d.getMonth() + 1)}-${d.getDate()}`;
@@ -58,41 +38,15 @@
 </script>
 
 <div class="container">
-    <p>Current count: <b>{count}</b></p>
-    <div>
-        <button on:click={decrement}>-</button>
-        <button on:click={increment}>+</button>
-        <button on:click={save}>Save</button>
-        <button on:click={openDashboard}>Dashboard</button>
-        {#if successMessage}<span class="success">{successMessage}</span>{/if}
-    </div>
     {#if prayerTime }
-        {JSON.stringify(prayerTime)};
+        {#each WAKTU_SOLAT_SORT as key, idx}
+            <div>{WAKTU_SOLAT_BAHASA[idx]} {prayerTime[key]}</div>
+        {/each}
     {/if}
 </div>
 
 <style>
     .container {
         min-width: 250px;
-    }
-
-    button {
-        border-radius: 2px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-        background-color: #2ecc71;
-        color: #ecf0f1;
-        transition: background-color 0.3s;
-        padding: 5px 10px;
-        border: none;
-    }
-
-    button:hover,
-    button:focus {
-        background-color: #27ae60;
-    }
-
-    .success {
-        color: #2ecc71;
-        font-weight: bold;
     }
 </style>
