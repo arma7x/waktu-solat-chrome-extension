@@ -6,6 +6,7 @@
 
     let prayerTime: WAKTU_SOLAT;
     let district: DISTRICT;
+    let state: string;
 
     function openDashboard() {
         const optionsUrl = chrome.runtime.getURL('src/dashboard/dashboard.html');
@@ -20,6 +21,7 @@
 
     onMount(async () => {
         try {
+            state = await configStorage.getState();
             district = await configStorage.getZone();
             if (district != null) {
                 const d = new Date();
@@ -39,6 +41,8 @@
 
 <div class="container">
     {#if prayerTime }
+        <div>Negeri {state}</div>
+        <div>Daerah/Lokasi {district.name}({district.code})</div>
         {#each WAKTU_SOLAT_SORT as key, idx}
             <div>{WAKTU_SOLAT_BAHASA[idx]} {prayerTime[key]}</div>
         {/each}
