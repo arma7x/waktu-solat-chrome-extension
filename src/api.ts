@@ -26,10 +26,10 @@ export function getStateZoneCode(): Promise<any> {
 }
 
 export function makeRequest(method, period, zone, form = {}): Request {
-  let options = { "method": method };
-  if (form && method == "POST" && Object.keys(form).length > 0) {
+  let options = { "method": method.toUpperCase() };
+  if (form && options.method == "POST" && Object.keys(form).length > 0) {
     const formData = new FormData();
-    for (key in form) {
+    for (let key in form) {
       formData.append(key, form[key]);
     }
     options["body"] = formData;

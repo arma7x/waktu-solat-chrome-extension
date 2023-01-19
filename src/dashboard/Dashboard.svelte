@@ -3,13 +3,41 @@
     import { getStateZoneCode, makeRequest } from "../api";
     import { storage, cacheStorage, configStorage } from "../storage";
 
+    interface KEY_VALUE {
+        [key: string]: any;
+    }
+
+    interface DISTRICT_TYPE {
+        name: string,
+        code: string
+    }
+
+    enum PERIOD {
+        WEEK        = "week",
+        MONTH       = "month",
+        YEAR        = "year",
+        DURATION    = "duration"
+    }
+
+    const PERIOD_OPTIONS = {
+        [PERIOD.WEEK]: "Mingguan",
+        [PERIOD.MONTH]: "Bulanan",
+        [PERIOD.YEAR]: "Tahunan",
+        [PERIOD.DURATION]: "Tarikh(Mula - Tamat)",
+    }
+
     export let count: number;
     let successMessage: string = null;
 
-    let stateZoneCode: { [key: string] } = {};
-    let districts: any;
+    let stateZoneCode: { [key: string]: [DISTRICT_TYPE] } = {};
+    let districts: [DISTRICT_TYPE];
     let currentState: string;
-    let currentDistrict: { [key: string]: { name: string, code: string }; };
+    let currentDistrict: DISTRICT_TYPE;
+    let periodType: PERIOD = PERIOD.YEAR;
+    let today: string;
+    let dateStart;
+    let dateEnd;
+    let prayerTime: [KEY_VALUE] = [];
 
     function increment() {
         count += 1;
@@ -27,6 +55,21 @@
                 successMessage = null;
             }, 1500);
         });
+    }
+
+    async function getWaktuSolat() {
+        try {
+            let method = "GET";
+            let form = {};
+            if (periodType == PERIOD.DURATION) {
+                method = "POST";
+                form = { "datestart": dateStart.value, "dateend": dateEnd.value };
+            }
+            const req = makeRequest(method, periodType, currentDistrict.code, form);
+            prayerTime = (await (await fetch(req)).json()).prayerTime;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     async function onStateChange(evt) {
@@ -47,13 +90,23 @@
         }
     }
 
+    function onPeriodChange(evt) {
+        periodType = evt.target.value;
+    }
+
     onMount(async () => {
+        const d = new Date();
+        today = `${d.getFullYear()}-${(d.getMonth() + 1) > 10 ? (d.getMonth() + 1) : '0'+(d.getMonth() + 1)}-${d.getDate()}`;
         try {
             currentState = await configStorage.getState();
             currentDistrict = await configStorage.getZone();
             stateZoneCode = await getStateZoneCode();
             if (stateZoneCode[currentState]) {
                 districts = stateZoneCode[currentState];
+
+            }
+            if (currentDistrict) {
+                getWaktuSolat();
             }
             await cacheStorage.cacheZoneCode(stateZoneCode);
         } catch (err) {
@@ -73,21 +126,40 @@
     </div>
     <div>
         <select id="state" name="state" on:change={onStateChange} bind:value={currentState}>
-            <option value="">Please select state</option>
+            <option value="">Sila pilih negeri</option>
             {#each Object.keys(stateZoneCode) as state}
             <option value="{state}">{state}</option>
             {/each}
         </select>
     </div>
-    <div>
     {#if districts != null}
+    <div>
         <select id="district" name="district" on:change={onDistrictChange}>
-            <option value="">Please select district/location</option>
+            <option value="">Sila pilih daerah/lokasi</option>
             {#each districts as district}
             <option value="{JSON.stringify(district)}" selected={currentDistrict && currentDistrict.name == district.name}>{district.name}</option>
             {/each}
         </select>
+    </div>
+    <div>
+        <select id="period" class="form-control" on:bind={onPeriodChange} bind:value={periodType}>
+            {#each Object.keys(PERIOD_OPTIONS) as key}
+            <option value="{key}">{PERIOD_OPTIONS[key]}</option>
+            {/each}
+        </select>
+    </div>
+    <div>
+    {#if periodType == "duration"}
+        <input bind:this={dateStart} type="date" id="datestart" name="datestart" value={today}>
+        <input bind:this={dateEnd} type="date" id="dateend" name="dateend" value={today}>
     {/if}
+    </div>
+    <div>
+        <button on:click={getWaktuSolat}>CARI</button>
+    </div>
+    {/if}
+    <div>
+        {JSON.stringify(prayerTime)};
     </div>
 </div>
 
