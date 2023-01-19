@@ -43,6 +43,7 @@
             <div>{WAKTU_SOLAT_BAHASA[idx]} {prayerTime[key]}</div>
         {/each}
     {/if}
+    <button on:click={openDashboard}>Dashboard</button>
 </div>
 
 <style>
