@@ -2,42 +2,20 @@
     import { onMount, onDestroy } from 'svelte';
     import { getStateZoneCode, makeRequest } from "../api";
     import { storage, cacheStorage, configStorage } from "../storage";
-
-    interface KEY_VALUE {
-        [key: string]: any;
-    }
-
-    interface DISTRICT_TYPE {
-        name: string,
-        code: string
-    }
-
-    enum PERIOD {
-        WEEK        = "week",
-        MONTH       = "month",
-        YEAR        = "year",
-        DURATION    = "duration"
-    }
-
-    const PERIOD_OPTIONS = {
-        [PERIOD.WEEK]: "Mingguan",
-        [PERIOD.MONTH]: "Bulanan",
-        [PERIOD.YEAR]: "Tahunan",
-        [PERIOD.DURATION]: "Tarikh(Mula - Tamat)",
-    }
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS } from "../types";
 
     export let count: number;
     let successMessage: string = null;
 
-    let stateZoneCode: { [key: string]: [DISTRICT_TYPE] } = {};
-    let districts: [DISTRICT_TYPE];
+    let stateZoneCode: { [key: string]: [DISTRICT] } = {};
+    let districts: [DISTRICT];
     let currentState: string;
-    let currentDistrict: DISTRICT_TYPE;
+    let currentDistrict: DISTRICT;
     let periodType: PERIOD = PERIOD.YEAR;
     let today: string;
     let dateStart;
     let dateEnd;
-    let prayerTime: [KEY_VALUE] = [];
+    let prayerTime: [WAKTU_SOLAT] = [];
 
     function increment() {
         count += 1;

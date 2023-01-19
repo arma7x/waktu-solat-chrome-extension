@@ -2,11 +2,12 @@
     import { onMount, onDestroy } from 'svelte';
     import { makeRequest } from "../api";
     import { storage, configStorage } from "../storage";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD } from "../types";
 
     export let count: number;
     let successMessage: string = null;
 
-    let prayerTime;
+    let prayerTime: WAKTU_SOLAT;
 
     function openDashboard() {
         const optionsUrl = chrome.runtime.getURL('src/dashboard/dashboard.html');
@@ -39,12 +40,12 @@
 
     onMount(async () => {
         try {
-            const district = await configStorage.getZone();
+            const district: DISTRICT = await configStorage.getZone();
             if (district != null) {
                 const d = new Date();
                 let today = `${d.getFullYear()}-${(d.getMonth() + 1) > 10 ? (d.getMonth() + 1) : '0'+(d.getMonth() + 1)}-${d.getDate()}`;
-                const req = makeRequest("POST", "duration", district.code, { "datestart": today, "dateend": today });
-                prayerTime = (await (await fetch(req)).json()).prayerTime;
+                const req = makeRequest("POST", PERIOD.DURATION, district.code, { "datestart": today, "dateend": today });
+                prayerTime = (await (await fetch(req)).json()).prayerTime[0];
                 console.log(prayerTime);
             } else {
 
