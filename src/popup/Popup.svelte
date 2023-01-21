@@ -29,7 +29,6 @@
                 let today = `${d.getFullYear()}-${(d.getMonth() + 1) > 10 ? (d.getMonth() + 1) : '0'+(d.getMonth() + 1)}-${d.getDate()}`;
                 const req = makeRequest(REQUEST_TYPE.POST, PERIOD.DURATION, district.code, { "datestart": today, "dateend": today });
                 prayerTime = (await (await fetch(req)).json()).prayerTime[0];
-                console.log(prayerTime);
             } else {
 
             }
