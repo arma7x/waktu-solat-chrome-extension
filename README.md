@@ -1,6 +1,9 @@
 # Waktu Solat - Chrome Extension
 
 > Waktu Solat hanya bagi Semenanjung Malaysia, Sabah dan Sarawak
+![Widget](https://i.imgur.com/2VJAEOJ.png)
+
+![Dashboard](https://i.imgur.com/9Uab6iJ.png)
 
 ## Development
 
