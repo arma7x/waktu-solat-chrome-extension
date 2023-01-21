@@ -131,4 +131,9 @@
         width: 100%;
         font-size: 110%;
     }
+    input, select {
+        min-height: 3rem;
+        font-size: 16px;
+        font-weight: 600;
+    }
 </style>
