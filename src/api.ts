@@ -1,3 +1,5 @@
+import { PERIOD, type REQUEST_FORM, REQUEST_TYPE } from "./types";
+
 export function getStateZoneCode(): Promise<any> {
   return fetch("https://www.e-solat.gov.my/index.php?siteId=24&pageId=24#")
   .then(response => {
@@ -25,9 +27,9 @@ export function getStateZoneCode(): Promise<any> {
   });
 }
 
-export function makeRequest(method, period, zone, form = {}): Request {
+export function makeRequest(method: REQUEST_TYPE = "GET", period: PERIOD, zone: String, form: REQUEST_FORM = {}): Request {
   let options = { "method": method.toUpperCase() };
-  if (form && options.method == "POST" && Object.keys(form).length > 0) {
+  if (form && options.method == REQUEST_TYPE.POST && Object.keys(form).length > 0) {
     const formData = new FormData();
     for (let key in form) {
       formData.append(key, form[key]);

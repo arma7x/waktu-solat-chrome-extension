@@ -3,7 +3,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { getStateZoneCode, makeRequest } from "../api";
     import { cacheStorage, configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, getLocalTime } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, REQUEST_TYPE, getLocalTime } from "../types";
 
     let stateZoneCode: { [key: string]: [DISTRICT] } = {};
     let districts: [DISTRICT];
@@ -17,10 +17,10 @@
 
     async function getWaktuSolat() {
         try {
-            let method = "GET";
+            let method = REQUEST_TYPE.GET;
             let form = {};
             if (periodType == PERIOD.DURATION) {
-                method = "POST";
+                method = REQUEST_TYPE.POST;
                 form = { "datestart": dateStart.value, "dateend": dateEnd.value };
             }
             const req = makeRequest(method, periodType, currentDistrict.code, form);

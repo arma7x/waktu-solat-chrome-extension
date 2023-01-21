@@ -30,6 +30,16 @@ export const PERIOD_OPTIONS = {
     [PERIOD.DURATION]: "Tarikh(Mula - Tamat)",
 }
 
+export interface REQUEST_FORM {
+    datestart:  string,
+    dateend:    string
+}
+
+export enum REQUEST_TYPE {
+    GET     = "GET",
+    POST    = "POST",
+}
+
 export const WAKTU_SOLAT_SORT = ["date", "hijri", "day", "imsak", "fajr", "syuruk", "dhuhr", "asr", "maghrib", "isha"];
 
 export const WAKTU_SOLAT_BAHASA = ["Tarikh", "Hijri", "Hari", "Imsak", "Subuh", "Syuruk", "Zohor", "Asar", "Maghrib", "Isyak"];

@@ -3,7 +3,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { makeRequest } from "../api";
     import { configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, getLocalTime } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, REQUEST_TYPE, getLocalTime } from "../types";
 
     let prayerTime: WAKTU_SOLAT;
     let district: DISTRICT;
@@ -27,7 +27,7 @@
             if (district != null) {
                 const d = new Date();
                 let today = `${d.getFullYear()}-${(d.getMonth() + 1) > 10 ? (d.getMonth() + 1) : '0'+(d.getMonth() + 1)}-${d.getDate()}`;
-                const req = makeRequest("POST", PERIOD.DURATION, district.code, { "datestart": today, "dateend": today });
+                const req = makeRequest(REQUEST_TYPE.POST, PERIOD.DURATION, district.code, { "datestart": today, "dateend": today });
                 prayerTime = (await (await fetch(req)).json()).prayerTime[0];
                 console.log(prayerTime);
             } else {
