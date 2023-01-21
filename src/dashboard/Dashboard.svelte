@@ -1,8 +1,9 @@
 <script lang="ts">
+    import "../content/styles.css";
     import { onMount, onDestroy } from 'svelte';
     import { getStateZoneCode, makeRequest } from "../api";
     import { cacheStorage, configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, getLocalTime } from "../types";
 
     let stateZoneCode: { [key: string]: [DISTRICT] } = {};
     let districts: [DISTRICT];
@@ -12,7 +13,7 @@
     let today: string;
     let dateStart;
     let dateEnd;
-    let prayerTime: [WAKTU_SOLAT] = [];
+    let prayerTimes: [WAKTU_SOLAT] = [];
 
     async function getWaktuSolat() {
         try {
@@ -23,7 +24,7 @@
                 form = { "datestart": dateStart.value, "dateend": dateEnd.value };
             }
             const req = makeRequest(method, periodType, currentDistrict.code, form);
-            prayerTime = (await (await fetch(req)).json()).prayerTime;
+            prayerTimes = (await (await fetch(req)).json()).prayerTime;
         } catch (err) {
             console.error(err);
         }
@@ -81,40 +82,53 @@
             <option value="{state}">{state}</option>
             {/each}
         </select>
+        {#if districts != null}
+            <select id="district" name="district" on:change={onDistrictChange}>
+                <option value="">Sila pilih daerah/lokasi</option>
+                {#each districts as district}
+                <option value="{JSON.stringify(district)}" selected={currentDistrict && currentDistrict.name == district.name}>{district.name}</option>
+                {/each}
+            </select>
+            <select id="period" class="form-control" on:bind={onPeriodChange} bind:value={periodType}>
+                {#each Object.keys(PERIOD_OPTIONS) as key}
+                <option value="{key}">{PERIOD_OPTIONS[key]}</option>
+                {/each}
+            </select>
+            {#if periodType == "duration"}
+                <input bind:this={dateStart} type="date" id="datestart" name="datestart" value={today}>
+                <input bind:this={dateEnd} type="date" id="dateend" name="dateend" value={today}>
+            {/if}
+            <button type="button" class="button" on:click={getWaktuSolat}>CARI</button>
+        {/if}
     </div>
-    {#if districts != null}
-    <div>
-        <select id="district" name="district" on:change={onDistrictChange}>
-            <option value="">Sila pilih daerah/lokasi</option>
-            {#each districts as district}
-            <option value="{JSON.stringify(district)}" selected={currentDistrict && currentDistrict.name == district.name}>{district.name}</option>
-            {/each}
-        </select>
-    </div>
-    <div>
-        <select id="period" class="form-control" on:bind={onPeriodChange} bind:value={periodType}>
-            {#each Object.keys(PERIOD_OPTIONS) as key}
-            <option value="{key}">{PERIOD_OPTIONS[key]}</option>
-            {/each}
-        </select>
-    </div>
-    <div>
-    {#if periodType == "duration"}
-        <input bind:this={dateStart} type="date" id="datestart" name="datestart" value={today}>
-        <input bind:this={dateEnd} type="date" id="dateend" name="dateend" value={today}>
-    {/if}
-    </div>
-    <div>
-        <button on:click={getWaktuSolat}>CARI</button>
-    </div>
-    {/if}
-    <div>
-        {JSON.stringify(prayerTime)};
+    <div class="margin-top-6">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    {#each WAKTU_SOLAT_BAHASA as header}
+                    <th>{header}</th>
+                    {/each}
+                </tr>
+            </thead>
+            <tbody>
+                {#each prayerTimes as row}
+                <tr>
+                    {#each Object.entries(row) as [key, value]}
+                    <td>{ key === "day" ? HARI_BAHASA[value.toLowerCase()] : getLocalTime(value)}</td>
+                    {/each}
+                </tr>
+                {/each}
+            </tbody>
+        </table>
     </div>
 </div>
 
 <style>
     .container {
-        min-width: 250px;
+        width: 100%;
+    }
+    table {
+        width: 100%;
+        font-size: 110%;
     }
 </style>

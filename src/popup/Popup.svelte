@@ -1,8 +1,9 @@
 <script lang="ts">
+    import "../content/styles.css";
     import { onMount, onDestroy } from 'svelte';
     import { makeRequest } from "../api";
     import { configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, getLocalTime } from "../types";
 
     let prayerTime: WAKTU_SOLAT;
     let district: DISTRICT;
@@ -41,17 +42,41 @@
 
 <div class="container">
     {#if prayerTime }
-        <div>Negeri {state}</div>
-        <div>Daerah/Lokasi {district.name}({district.code})</div>
-        {#each WAKTU_SOLAT_SORT as key, idx}
-            <div>{WAKTU_SOLAT_BAHASA[idx]} {prayerTime[key]}</div>
-        {/each}
+        <div>
+            <div class="row-space-between">
+                <h2>Negeri:</h2>
+                <h3>{state}</h3>
+            </div>
+            <div class="row-space-between margin-top-2">
+                <h3>Daerah/Lokasi:</h3>
+                <h3>{district.name}({district.code})</h3>
+            </div>
+        </div>
+        <div class="margin-top-10">
+            {#each WAKTU_SOLAT_SORT as key, idx}
+            <div class="row-space-between margin-top-2">
+                <h3>{WAKTU_SOLAT_BAHASA[idx]}</h3>
+                <h3>{ key === "day" ? HARI_BAHASA[prayerTime[key].toLowerCase()] : getLocalTime(prayerTime[key])}</h3>
+            </div>
+            {/each}
+        </div>
+    {:else}
+        <h3>Sila pilih negeri/daerah/lokasi di halaman Dashboard</h3>
     {/if}
-    <button on:click={openDashboard}>Dashboard</button>
+    <div class="margin-top-6">
+        <button type="button" class="button button-block" on:click={openDashboard}>Dashboard</button>
+    </div>
 </div>
 
 <style>
-    .container {
-        min-width: 250px;
+    .row-space-between {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .row-space-between > h5, h4, h3, h2, h1 {
+        margin: 0;
+        padding: 0;
     }
 </style>

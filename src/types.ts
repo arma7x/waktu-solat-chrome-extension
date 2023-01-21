@@ -33,3 +33,24 @@ export const PERIOD_OPTIONS = {
 export const WAKTU_SOLAT_SORT = ["date", "hijri", "day", "imsak", "fajr", "syuruk", "dhuhr", "asr", "maghrib", "isha"];
 
 export const WAKTU_SOLAT_BAHASA = ["Tarikh", "Hijri", "Hari", "Imsak", "Subuh", "Syuruk", "Zohor", "Asar", "Maghrib", "Isyak"];
+
+export const HARI_BAHASA = {
+    "sunday":       "Ahad",
+    "monday":       "Isnin",
+    "tuesday":      "Selasa",
+    "wednesday":    "Rabu",
+    "thursday":     "Khamis",
+    "friday":       "Jumaat",
+    "saturday":     "Sabtu",
+}
+
+// https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
+export const getLocalTime = (time) => {
+    let regex = new RegExp(/^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/);
+    if (regex.test(time) == true) {
+        let d = new Date();
+        d = new Date(`${d.toLocaleDateString()} ${time}`);
+        return d.toLocaleTimeString();
+    }
+    return time;
+}
