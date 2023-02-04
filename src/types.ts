@@ -60,7 +60,12 @@ export const getLocalTime = (time) => {
     if (regex.test(time) == true) {
         let d = new Date();
         d = new Date(`${d.toLocaleDateString()} ${time}`);
-        return d.toLocaleTimeString();
+        return d.toLocaleTimeString().split(' ').map((x, i) => {
+          if (i == 0)
+            return x.split(':').slice(0, 2).join(':');
+          else
+            return x;
+        }).join(' ');
     }
     return time;
 }
