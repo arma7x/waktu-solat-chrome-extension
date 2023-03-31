@@ -3,7 +3,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { getStateZoneCode, makeRequest } from "../api";
     import { cacheStorage, configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, REQUEST_TYPE, getLocalTime } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, PERIOD_OPTIONS, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, REQUEST_TYPE, getLocalTime, formatHijri } from "../types";
 
     let stateZoneCode: { [key: string]: [DISTRICT] } = {};
     let districts: [DISTRICT];
@@ -114,7 +114,7 @@
                 {#each prayerTimes as row}
                 <tr>
                     {#each Object.entries(row) as [key, value]}
-                    <td>{ key === "day" ? HARI_BAHASA[value.toLowerCase()] : getLocalTime(value)}</td>
+                    <td>{ key === "day" ? HARI_BAHASA[value.toLowerCase()] : (key === "hijri" ? formatHijri(value) : getLocalTime(value))}</td>
                     {/each}
                 </tr>
                 {/each}

@@ -69,3 +69,13 @@ export const getLocalTime = (time) => {
     }
     return time;
 }
+
+export const formatHijri = (date) => {
+    const months = ["Muharam", "Safar", "Rabiulawal", "Rabiulakhir", "Jamadilawal", "Jamadilakhir", "Rejab", "Syaaban", "Ramadan", "Syawal", "Zulkaedah", "Zulhijah"];
+    try {
+        let [y, m, d] = date.split('-');
+        return `${d}-${months[parseInt(m) - 1]}-${y}`;
+    } catch (err) {
+        return date;
+    }
+}

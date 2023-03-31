@@ -3,7 +3,7 @@
     import { onMount, onDestroy } from 'svelte';
     import { makeRequest } from "../api";
     import { configStorage } from "../storage";
-    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, REQUEST_TYPE, getLocalTime } from "../types";
+    import { type DISTRICT, type WAKTU_SOLAT, PERIOD, WAKTU_SOLAT_SORT, WAKTU_SOLAT_BAHASA, HARI_BAHASA, REQUEST_TYPE, getLocalTime, formatHijri } from "../types";
 
     let prayerTime: WAKTU_SOLAT;
     let district: DISTRICT;
@@ -55,7 +55,7 @@
             {#each WAKTU_SOLAT_SORT as key, idx}
             <div class="row-space-between margin-top-2">
                 <h3>{WAKTU_SOLAT_BAHASA[idx]}</h3>
-                <h3>{ key === "day" ? HARI_BAHASA[prayerTime[key].toLowerCase()] : getLocalTime(prayerTime[key])}</h3>
+                <h3>{ key === "day" ? HARI_BAHASA[prayerTime[key].toLowerCase()] : (key === "hijri" ? formatHijri(prayerTime[key]) : getLocalTime(prayerTime[key])) }</h3>
             </div>
             {/each}
         </div>
